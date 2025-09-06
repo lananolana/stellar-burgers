@@ -8,12 +8,16 @@ import { Preloader } from '../../components/ui';
 import { FC } from 'react';
 
 export const ConstructorPage: FC = () => {
-  /** TODO: взять переменную из стора */
-  const isIngredientsLoading = false;
+  const isIngredientsLoading = useSelector(
+    (state) => state.ingredients.loading
+  );
+  const ingredients = useSelector((state) => state.ingredients.ingredients);
 
   return (
     <>
-      {isIngredientsLoading ? (
+      {!isIngredientsLoading && !ingredients.length ? (
+        <p />
+      ) : isIngredientsLoading ? (
         <Preloader />
       ) : (
         <main className={styles.containerMain}>
