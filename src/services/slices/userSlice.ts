@@ -13,6 +13,11 @@ import {
   updateUserApi
 } from '@api';
 import { deleteCookie, getCookie, setCookie } from '../../utils/cookie';
+import {
+  createAsyncHandlers,
+  createUserAsyncHandlers,
+  createLogoutHandlers
+} from '@utils';
 
 type TUserState = {
   isAuthorized: boolean;
@@ -134,56 +139,29 @@ export const userSlice = createSlice({
     /**
      * registerUserApiAsync
      */
+    const registerHandlers = createUserAsyncHandlers();
     builder
-      .addCase(registerUserApiAsync.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(registerUserApiAsync.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message || null;
-      })
-      .addCase(registerUserApiAsync.fulfilled, (state, action) => {
-        state.loading = false;
-        state.user = action.payload;
-        state.isAuthorized = true;
-      });
+      .addCase(registerUserApiAsync.pending, registerHandlers.pending)
+      .addCase(registerUserApiAsync.rejected, registerHandlers.rejected)
+      .addCase(registerUserApiAsync.fulfilled, registerHandlers.fulfilled);
 
     /**
      * loginUserApiAsync
      */
+    const loginHandlers = createUserAsyncHandlers();
     builder
-      .addCase(loginUserApiAsync.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(loginUserApiAsync.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message || null;
-      })
-      .addCase(loginUserApiAsync.fulfilled, (state, action) => {
-        state.loading = false;
-        state.user = action.payload.user;
-        state.isAuthorized = true;
-      });
+      .addCase(loginUserApiAsync.pending, loginHandlers.pending)
+      .addCase(loginUserApiAsync.rejected, loginHandlers.rejected)
+      .addCase(loginUserApiAsync.fulfilled, loginHandlers.fulfilled);
 
     /**
      * logoutUserApiAsync
      */
+    const logoutHandlers = createLogoutHandlers();
     builder
-      .addCase(logoutUserApiAsync.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(logoutUserApiAsync.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message || null;
-      })
-      .addCase(logoutUserApiAsync.fulfilled, (state) => {
-        state.loading = false;
-        state.user = null;
-        state.isAuthorized = false;
-      });
+      .addCase(logoutUserApiAsync.pending, logoutHandlers.pending)
+      .addCase(logoutUserApiAsync.rejected, logoutHandlers.rejected)
+      .addCase(logoutUserApiAsync.fulfilled, logoutHandlers.fulfilled);
 
     /**
      * checkUserAuthAsync
@@ -208,15 +186,10 @@ export const userSlice = createSlice({
     /**
      * updateUserApiAsync
      */
+    const updateHandlers = createAsyncHandlers();
     builder
-      .addCase(updateUserApiAsync.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(updateUserApiAsync.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message || null;
-      })
+      .addCase(updateUserApiAsync.pending, updateHandlers.pending)
+      .addCase(updateUserApiAsync.rejected, updateHandlers.rejected)
       .addCase(updateUserApiAsync.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.user;
@@ -225,33 +198,25 @@ export const userSlice = createSlice({
     /**
      * forgotPasswordApiAsync
      */
+    const forgotPasswordHandlers = createAsyncHandlers();
     builder
-      .addCase(forgotPasswordApiAsync.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(forgotPasswordApiAsync.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message || null;
-      })
-      .addCase(forgotPasswordApiAsync.fulfilled, (state) => {
-        state.loading = false;
-      });
+      .addCase(forgotPasswordApiAsync.pending, forgotPasswordHandlers.pending)
+      .addCase(forgotPasswordApiAsync.rejected, forgotPasswordHandlers.rejected)
+      .addCase(
+        forgotPasswordApiAsync.fulfilled,
+        forgotPasswordHandlers.fulfilled
+      );
 
     /**
      * resetPasswordApiAsync
      */
+    const resetPasswordHandlers = createAsyncHandlers();
     builder
-      .addCase(resetPasswordApiAsync.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(resetPasswordApiAsync.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message || null;
-      })
-      .addCase(resetPasswordApiAsync.fulfilled, (state) => {
-        state.loading = false;
-      });
+      .addCase(resetPasswordApiAsync.pending, resetPasswordHandlers.pending)
+      .addCase(resetPasswordApiAsync.rejected, resetPasswordHandlers.rejected)
+      .addCase(
+        resetPasswordApiAsync.fulfilled,
+        resetPasswordHandlers.fulfilled
+      );
   }
 });

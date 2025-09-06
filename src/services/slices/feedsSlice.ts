@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { TOrder } from '@utils-types';
 import { getFeedsApi } from '@api';
+import { createAsyncHandlers } from '@utils';
 
 type TFeedsState = {
   orders: TOrder[];
@@ -26,15 +27,10 @@ export const feedsSlice = createSlice({
   reducers: {},
   selectors: {},
   extraReducers: (builder) => {
+    const handlers = createAsyncHandlers();
     builder
-      .addCase(getFeedsApiAsync.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(getFeedsApiAsync.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message || null;
-      })
+      .addCase(getFeedsApiAsync.pending, handlers.pending)
+      .addCase(getFeedsApiAsync.rejected, handlers.rejected)
       .addCase(getFeedsApiAsync.fulfilled, (state, action) => {
         state.loading = false;
         state.orders = action.payload.orders;

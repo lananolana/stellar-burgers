@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { TIngredient } from '@utils-types';
 import { getIngredientsApi } from '@api';
+import { createAsyncDataHandlers } from '@utils';
 
 type TIngredientsState = {
   ingredients: TIngredient[];
@@ -25,18 +26,10 @@ export const ingredientsSlice = createSlice({
   reducers: {},
   selectors: {},
   extraReducers: (builder) => {
+    const handlers = createAsyncDataHandlers<TIngredient[]>('ingredients');
     builder
-      .addCase(getIngredientsAsync.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(getIngredientsAsync.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message || null;
-      })
-      .addCase(getIngredientsAsync.fulfilled, (state, action) => {
-        state.loading = false;
-        state.ingredients = action.payload;
-      });
+      .addCase(getIngredientsAsync.pending, handlers.pending)
+      .addCase(getIngredientsAsync.rejected, handlers.rejected)
+      .addCase(getIngredientsAsync.fulfilled, handlers.fulfilled);
   }
 });

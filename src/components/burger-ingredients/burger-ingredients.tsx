@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 import { TIngredient, TTabMode } from '@utils-types';
@@ -10,15 +10,18 @@ export const BurgerIngredients: FC = () => {
     (state) => state.ingredients.ingredients
   );
 
-  const buns: TIngredient[] = ingredients?.filter(
-    (item) => item.type === 'bun'
-  );
-  const mains: TIngredient[] = ingredients?.filter(
-    (item) => item.type === 'main'
-  );
-  const sauces: TIngredient[] = ingredients?.filter(
-    (item) => item.type === 'sauce'
-  );
+  // Оптимизация: мемоизированное разделение ингредиентов по типам
+  const { buns, mains, sauces } = useMemo(() => {
+    if (!ingredients || !Array.isArray(ingredients)) {
+      return { buns: [], mains: [], sauces: [] };
+    }
+
+    return {
+      buns: ingredients.filter((item) => item.type === 'bun'),
+      mains: ingredients.filter((item) => item.type === 'main'),
+      sauces: ingredients.filter((item) => item.type === 'sauce')
+    };
+  }, [ingredients]);
 
   const [currentTab, setCurrentTab] = useState<TTabMode>('bun');
   const titleBunRef = useRef<HTMLHeadingElement>(null);

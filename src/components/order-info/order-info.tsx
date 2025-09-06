@@ -4,12 +4,16 @@ import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
 import { useDispatch, useSelector } from '../../services/store';
 import { useParams } from 'react-router-dom';
-import { getOrderByNumberApiAsync } from '../../services/slices/ordersSlice';
+import {
+  getOrderByNumberApiAsync,
+  ordersSlice
+} from '../../services/slices/ordersSlice';
 import { OrderInfoProps } from './type';
 
 export const OrderInfo: FC<OrderInfoProps> = memo(({ isModal }) => {
   const dispatch = useDispatch();
   const orderData = useSelector((state) => state.orders.orderModalData);
+  const loading = useSelector((state) => state.orders.loading);
 
   const ingredients: TIngredient[] = useSelector(
     (state) => state.ingredients.ingredients
@@ -18,8 +22,15 @@ export const OrderInfo: FC<OrderInfoProps> = memo(({ isModal }) => {
   const orderId = Number(useParams().number);
 
   useEffect(() => {
+    dispatch(ordersSlice.actions.clearOrder());
     dispatch(getOrderByNumberApiAsync(orderId));
-  }, [dispatch, orderId]);
+
+    return () => {
+      if (isModal) {
+        dispatch(ordersSlice.actions.clearOrder());
+      }
+    };
+  }, [dispatch, orderId, isModal]);
 
   /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {
@@ -63,7 +74,7 @@ export const OrderInfo: FC<OrderInfoProps> = memo(({ isModal }) => {
     };
   }, [orderData, ingredients]);
 
-  if (!orderInfo) {
+  if (!orderInfo || loading) {
     return <Preloader />;
   }
 
