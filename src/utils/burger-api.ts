@@ -49,7 +49,7 @@ type TRefreshResponse = TServerResponse<{
 }>;
 
 export const refreshToken = (): Promise<TRefreshResponse> =>
-  request('/auth/token', {
+  request('auth/token', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json;charset=utf-8'
