@@ -24,6 +24,7 @@ export const BurgerConstructor: FC = () => {
     }
     const ingredientsId = [
       constructorItems.bun._id,
+      constructorItems.bun._id,
       ...constructorItems.ingredients.map((ingredient) => ingredient._id)
     ];
     dispatch(orderBurgerApiAsync(ingredientsId));
