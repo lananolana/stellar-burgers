@@ -30,13 +30,14 @@ export const BurgerConstructor: FC = () => {
   };
 
   const closeOrderModal = () => {
-    dispatch(constructorSlice.actions.clearConstructor());
     dispatch(ordersSlice.actions.clearOrder());
   };
 
   useEffect(() => {
-    dispatch(ordersSlice.actions.clearOrder());
-  }, [dispatch]);
+    if (orderModalData) {
+      dispatch(constructorSlice.actions.clearConstructor());
+    }
+  }, [dispatch, orderModalData]);
 
   const price = useMemo(
     () =>
